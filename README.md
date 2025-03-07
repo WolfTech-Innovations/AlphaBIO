@@ -1,5 +1,3 @@
----
-
 **AlphaBIO: DNA Sequence Binding for Target DNA Disarmament**
 
 AlphaBIO is a bioinformatics tool designed to generate DNA sequences capable of binding to and breaking down target DNA sequences. The tool simulates DNA binding affinity, stability, and the effectiveness of custom-designed DNA sequences intended to neutralize harmful target DNAs such as viruses or other genetic threats.
@@ -12,5 +10,3 @@ Key Features:
 - **Optimization**: Optimize cure candidates for stability and effectiveness, ensuring maximum efficiency in neutralizing target DNA.
 
 AlphaBIO aims to provide tools for molecular biologists and genetic engineers to design DNA sequences that can disarm harmful genetic material, making it particularly useful in fields like virology, synthetic biology, and gene editing.
-
----
