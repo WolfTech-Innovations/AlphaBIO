@@ -50,7 +50,7 @@ You will be presented with an interactive menu where you can choose your sequenc
 If you'd like to contribute to this project, please fork this repository, make changes, and submit a pull request!
 
 #### License:
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPL License.
 
 ---
 
