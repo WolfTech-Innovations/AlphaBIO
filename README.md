@@ -1,5 +1,3 @@
-Here's a GitHub description for the program:
-
 ---
 
 ## AlphaBIO 2.1.3 - DNA/RNA Manipulation Suite
@@ -38,11 +36,11 @@ python AlphaBIO.py
 
 You will be presented with an interactive menu where you can choose your sequence type (DNA or RNA) and perform various operations like mutation, transcription, reverse complement, and more.
 
-### Example:
+## Creating DNA that binds to and disables the target DNA:
 1. Select your sequence type (DNA or RNA).
 2. Enter your sequence.
-3. Choose an operation like transcribing DNA to RNA, introducing a mutation, or generating a random sequence.
-4. View or save your results.
+3. Choose operation 9.
+4. Check output.txt
 
 ---
 
@@ -53,5 +51,3 @@ If you'd like to contribute to this project, please fork this repository, make c
 This project is licensed under the GPL License.
 
 ---
-
-This description can be copied and pasted into your GitHub repository to provide clear instructions on what the project is, how to install it, and how to use it.
