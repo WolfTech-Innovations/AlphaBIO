@@ -1,5 +1,3 @@
----
-
 ## AlphaBIO 2.1.3 - DNA/RNA Manipulation Suite
 
 **AlphaBIO 2.1.3** is a powerful DNA/RNA manipulation tool developed by **WolfTech Innovations**. It provides a terminal-based interface (TUI) for a range of bioinformatics tasks, from basic sequence transcription and mutation to advanced sequence analysis and random sequence generation. With easy-to-use functions for both DNA and RNA sequences, AlphaBIO offers various tools for sequence analysis, mutation introduction, GC content calculation, and more.
@@ -41,8 +39,6 @@ You will be presented with an interactive menu where you can choose your sequenc
 2. Enter your sequence.
 3. Choose operation 9.
 4. Check output.txt
-
----
 
 #### Contributions:
 If you'd like to contribute to this project, please fork this repository, make changes, and submit a pull request!
