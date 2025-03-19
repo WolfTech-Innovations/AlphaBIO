@@ -3,7 +3,7 @@ import random
 
 # Branding for the program
 def print_branding():
-    print("AlphaBIO 2.1.3 - by WolfTech Innovations\n")
+    print("AlphaBIO 2.2.0 - by WolfTech Innovations\n")
     print("*****************************************\n")
 
 # Function to generate complementary DNA strand
@@ -44,6 +44,37 @@ def dna_to_rna(dna_sequence):
 def rna_to_dna(rna_sequence):
     return rna_sequence.replace('U', 'T')
 
+# Function to create cDNA from DNA
+def dna_to_cdna(dna_sequence):
+    # cDNA is the complement of the DNA template strand
+    return generate_complementary_dna_strand(dna_sequence)
+
+# Function to create viral treatment sequence
+def create_virus_treatment(viral_rna):
+    """
+    Creates a potential treatment sequence for viral RNA by:
+    1. Converting viral RNA to DNA
+    2. Creating cDNA from the DNA
+    3. Converting cDNA back to RNA (antisense RNA)
+    
+    This antisense RNA can potentially bind to viral RNA and prevent translation.
+    """
+    # Step 1: Convert viral RNA to DNA
+    dna_sequence = rna_to_dna(viral_rna)
+    
+    # Step 2: Create cDNA from DNA
+    cdna_sequence = dna_to_cdna(dna_sequence)
+    
+    # Step 3: Convert cDNA back to RNA (antisense RNA)
+    antisense_rna = dna_to_rna(cdna_sequence)
+    
+    return {
+        "original_viral_rna": viral_rna,
+        "dna_sequence": dna_sequence,
+        "cdna_sequence": cdna_sequence,
+        "antisense_rna": antisense_rna
+    }
+
 # Function to introduce mutations (point mutation, insertion, or deletion)
 def introduce_mutation(sequence, mutation_type="point", mutation_probability=0.1):
     mutated_sequence = list(sequence)
@@ -70,6 +101,10 @@ def calculate_gc_content(sequence):
 # Function to count each base (A, T/U, C, G)
 def count_bases(sequence):
     base_counts = {'A': sequence.count('A'), 'T': sequence.count('T'), 'C': sequence.count('C'), 'G': sequence.count('G')}
+    # Add U count for RNA sequences
+    if 'U' in sequence:
+        base_counts['U'] = sequence.count('U')
+        base_counts.pop('T', None)  # Remove T count for RNA
     return base_counts
 
 # Function to reverse complement a sequence
@@ -100,7 +135,7 @@ def get_input_sequence(sequence_type, stdscr):
     stdscr.refresh()
     target_sequence = stdscr.getstr().decode("utf-8").upper()
 
-    valid_bases = 'ATCG' if sequence_type == "DNA" else 'AUCGA'
+    valid_bases = 'ATCG' if sequence_type == "DNA" else 'AUCG'
 
     while not all(base in valid_bases for base in target_sequence):
         stdscr.addstr(f"Invalid input. Please enter a valid {sequence_type} sequence using only {valid_bases}.\n")
@@ -110,9 +145,9 @@ def get_input_sequence(sequence_type, stdscr):
     return target_sequence
 
 # Save results to a file
-def save_results_to_file(sequence, filename="output.txt"):
+def save_results_to_file(content, filename="output.txt"):
     with open(filename, 'w') as file:
-        file.write(sequence)
+        file.write(content)
 
 # Sequence alignment (simple)
 def align_sequences(seq1, seq2):
@@ -161,6 +196,7 @@ def main(stdscr):
     actions = [
         "Transcribe DNA to RNA (if DNA input)",
         "Transcribe RNA to DNA (if RNA input)",
+        "Create Virus Treatment (RNA to DNA to cDNA to RNA)",
         "Introduce Mutation (point, insertion, or deletion)",
         "Reverse Complement of Sequence",
         "Calculate GC Content",
@@ -176,29 +212,17 @@ def main(stdscr):
         stdscr.addstr("Select an additional action:\n")
         for idx, action in enumerate(actions):
             stdscr.addstr(f"{idx+1}. {action}\n")
-        stdscr.addstr("Enter your choice (1/2/3/4/5/6/7/8/9): ")
+        stdscr.addstr("Enter your choice (1-11): ")
 
         stdscr.refresh()
         key = stdscr.getch()
 
-        if key == 49:  # '1' key pressed
-            action_choice = 1
-        elif key == 50:  # '2' key pressed
-            action_choice = 2
-        elif key == 51:  # '3' key pressed
-            action_choice = 3
-        elif key == 52:  # '4' key pressed
-            action_choice = 4
-        elif key == 53:  # '5' key pressed
-            action_choice = 5
-        elif key == 54:  # '6' key pressed
-            action_choice = 6
-        elif key == 55:  # '7' key pressed
-            action_choice = 7
-        elif key == 56:  # '8' key pressed
-            action_choice = 8
-        elif key == 57:  # '9' key pressed
-            action_choice = 9
+        if 49 <= key <= 57:  # '1' to '9' keys pressed
+            action_choice = key - 48
+        elif key == 49 + 10:  # '10' key combination
+            action_choice = 10
+        elif key == 49 + 11:  # '11' key combination
+            action_choice = 11
 
     if action_choice == 1 and sequence_type_choice == "DNA":
         rna_sequence = dna_to_rna(target_sequence)
@@ -209,42 +233,75 @@ def main(stdscr):
         stdscr.clear()
         stdscr.addstr(f"Transcribed DNA Sequence: {dna_sequence}\n")
     elif action_choice == 3:
-        stdscr.addstr("Choose mutation type: point, insertion, or deletion: ")
+        if sequence_type_choice == "RNA":
+            treatment = create_virus_treatment(target_sequence)
+            stdscr.clear()
+            stdscr.addstr("Virus Treatment Created:\n")
+            stdscr.addstr(f"Original Viral RNA: {treatment['original_viral_rna']}\n")
+            stdscr.addstr(f"DNA Sequence: {treatment['dna_sequence']}\n")
+            stdscr.addstr(f"cDNA Sequence: {treatment['cdna_sequence']}\n")
+            stdscr.addstr(f"Antisense RNA Treatment: {treatment['antisense_rna']}\n")
+            stdscr.addstr("\nThis antisense RNA can bind to viral RNA and potentially inhibit viral replication.\n")
+        else:
+            stdscr.clear()
+            stdscr.addstr("Virus treatments can only be created from RNA sequences.\n")
+    elif action_choice == 4:
+        stdscr.clear()
+        stdscr.addstr("Choose mutation type (point/insertion/deletion): ")
         stdscr.refresh()
         mutation_type = stdscr.getstr().decode("utf-8").lower()
         mutated_sequence = introduce_mutation(target_sequence, mutation_type)
         stdscr.clear()
         stdscr.addstr(f"Mutated Sequence: {mutated_sequence}\n")
-    elif action_choice == 4:
+    elif action_choice == 5:
         reverse_comp = reverse_complement(target_sequence)
         stdscr.clear()
         stdscr.addstr(f"Reverse Complement: {reverse_comp}\n")
-    elif action_choice == 5:
+    elif action_choice == 6:
         gc_content = calculate_gc_content(target_sequence)
         stdscr.clear()
         stdscr.addstr(f"GC Content: {gc_content:.2f}%\n")
-    elif action_choice == 6:
+    elif action_choice == 7:
         base_counts = count_bases(target_sequence)
         stdscr.clear()
-        stdscr.addstr(f"Base Counts: A={base_counts['A']}, T={base_counts['T']}, C={base_counts['C']}, G={base_counts['G']}\n")
-    elif action_choice == 7:
+        stdscr.addstr("Base Counts:\n")
+        for base, count in base_counts.items():
+            stdscr.addstr(f"{base}={count} ")
+        stdscr.addstr("\n")
+    elif action_choice == 8:
+        stdscr.clear()
         stdscr.addstr("Enter the desired length for the random sequence: ")
         stdscr.refresh()
         length = int(stdscr.getstr().decode("utf-8"))
         random_sequence = generate_random_sequence(length)
         stdscr.clear()
         stdscr.addstr(f"Generated Random Sequence: {random_sequence}\n")
-    elif action_choice == 8:
+    elif action_choice == 9:
+        stdscr.clear()
         stdscr.addstr("Enter a second sequence to align with:\n")
         stdscr.refresh()
         second_sequence = stdscr.getstr().decode("utf-8").upper()
         matches, mismatches = align_sequences(target_sequence, second_sequence)
         stdscr.clear()
         stdscr.addstr(f"Alignment: Matches={matches}, Mismatches={mismatches}\n")
-    elif action_choice == 9:
-        save_results_to_file(target_sequence, "output.txt")
-        stdscr.clear()
-        stdscr.addstr("Results saved to 'output.txt'.\n")
+    elif action_choice == 10:
+        if sequence_type_choice == "RNA" and action_choice == 3:
+            treatment = create_virus_treatment(target_sequence)
+            save_content = f"""Virus Treatment Report
+Original Viral RNA: {treatment['original_viral_rna']}
+DNA Sequence: {treatment['dna_sequence']}
+cDNA Sequence: {treatment['cdna_sequence']}
+Antisense RNA Treatment: {treatment['antisense_rna']}
+
+This antisense RNA can bind to viral RNA and potentially inhibit viral replication.
+"""
+            save_results_to_file(save_content, "viral_treatment.txt")
+            stdscr.clear()
+            stdscr.addstr("Results saved to 'viral_treatment.txt'.\n")
+        else:
+            save_results_to_file(target_sequence, "output.txt")
+            stdscr.clear()
+            stdscr.addstr("Results saved to 'output.txt'.\n")
     
     stdscr.refresh()
     stdscr.getch()  # Wait for user to press a key before exiting
